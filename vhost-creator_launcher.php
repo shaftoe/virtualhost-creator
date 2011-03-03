@@ -8,7 +8,7 @@ $domainName = "";
 <body>
 <h2 style="text-align: center; padding: 10px; background:#dee">
 <form method="post" action="<?php echo $PHP_SELF;?>">
-Domain Name: <input type="text" size="12" maxlength="12" name="DomainName">
+Domain Name: <input type="text" size="25" maxlength="100" name="DomainName">
 <input type="submit" value="submit" name="submit">
 </form>
 <?php
