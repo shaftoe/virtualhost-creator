@@ -15,22 +15,25 @@ baseDocumentRoot = "/var/www"
 
 ctlCommand = ("/usr/sbin/apache2ctl","-t")
 reloadCommand = ("sudo", "/usr/sbin/apache2ctl", "graceful")
-virtualHostName = [""]
+virtualHostData = ["",""]
 devnull = open("/dev/null","w")
 
 import virtualhost
 import subprocess
 import sys
 
-def getVirtualHostName():
-    if len(sys.argv) != 2:
-        print "Syntax: " + sys.argv[0] + " virtual_host_name\n"
+def getvirtualHostData():
+    if len(sys.argv) < 2:
+        print "Syntax: " + sys.argv[0] + " virtual_host_name [<virtual_alias>  <virtual_alias> ...]\n"
         exit()
     else:
-        virtualHostName[0] = sys.argv[1] # we really should check correctness here...
+        virtualHostData[0] = sys.argv[1] # we really should check correctness here...
+        if len(sys.argv) > 1:  # we really should check correctness here...
+           for alias in sys.argv[2:]:
+                virtualHostData[1] = virtualHostData[1] + " " + alias
 
 def createVirtualHostFile(apacheconfigfile):
-    myVirtualHost = virtualhost.virtualhost(virtualHostName[0],baseDocumentRoot)
+    myVirtualHost = virtualhost.virtualhost(virtualHostData[0],baseDocumentRoot,virtualHostData[1])
     filehandle = open(apacheconfigfile,"w")
     filehandle.write(myVirtualHost.printconfig())
     filehandle.close()
@@ -58,12 +61,12 @@ def reloadApacheConfiguration():
         return False
 
 if __name__ == '__main__':
-    getVirtualHostName()
+    getvirtualHostData()
     try:
-        createVirtualHostFile(configBaseDirectory + "/" + virtualHostName[0])
+        createVirtualHostFile(configBaseDirectory + "/" + virtualHostData[0])
     except IOError:
         print "Something wrong with your configs, buddy..."
         exit()
     if checkApacheConfigCorrectness():
         if reloadApacheConfiguration():
-            print "Virtual-host for " + virtualHostName[0] + " domain created succesfully"
+            print "Virtual-host for " + virtualHostData[0] + " domain created succesfully"
