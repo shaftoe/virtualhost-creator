@@ -1,5 +1,5 @@
 class virtualhost():
-    def __init__(self, ServerName="", DocumentRoot="", ServerAdmin=""):
+    def __init__(self, ServerName="", DocumentRoot="", ServerAlias="", ServerAdmin=""):
         self.baseconfig = { "ServerAdmin" : "",
                     "DocumentRoot" : "/var/www",
                     "ServerName" : "default_virtualhost",
@@ -14,10 +14,12 @@ class virtualhost():
             self.baseconfig["ServerName"] = ServerName
         if DocumentRoot:
             self.baseconfig["DocumentRoot"] = DocumentRoot
+        self.baseconfig["DocumentRoot"] = self.baseconfig["DocumentRoot"] + "/" + self.baseconfig["ServerName"]
+        if ServerAlias:
+            self.baseconfig["ServerAlias"] = ServerAlias
         if ServerAdmin:
             self.baseconfig["ServerAdmin"] = ServerAdmin
-        self.baseconfig["DocumentRoot"] = self.baseconfig["DocumentRoot"] + "/" + self.baseconfig["ServerName"]
-        self.baseconfig["ServerAlias"] = "www." + self.baseconfig["ServerName"]
+        self.baseconfig["ServerAlias"] = self.baseconfig["ServerAlias"] + " " + "www." + self.baseconfig["ServerName"]
 
     def getbaseconfig(self):
         print self.baseconfig
