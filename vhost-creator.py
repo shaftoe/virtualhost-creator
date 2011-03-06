@@ -21,6 +21,7 @@ devnull = open("/dev/null","w")
 import virtualhost
 import subprocess
 import sys
+import os
 
 def getvirtualHostData():
     if len(sys.argv) < 2:
@@ -60,6 +61,13 @@ def reloadApacheConfiguration():
         print "Can't reload Apache configuration... aborting badly"
         return False
 
+def createDirectoryIfMissing():
+    directoryName = baseDocumentRoot + "/" + virtualHostData[0]
+    try:
+        os.mkdir(directoryName, 0750)
+    except OSError:
+        print "Warning: directory " + directoryName + " already exists"
+
 if __name__ == '__main__':
     getvirtualHostData()
     try:
@@ -69,4 +77,5 @@ if __name__ == '__main__':
         exit()
     if checkApacheConfigCorrectness():
         if reloadApacheConfiguration():
-            print "Virtual-host for " + virtualHostData[0] + " domain created succesfully"
+            print "Virtual-host for " + virtualHostData[0] + " domain created succesfully."
+            createDirectoryIfMissing()
